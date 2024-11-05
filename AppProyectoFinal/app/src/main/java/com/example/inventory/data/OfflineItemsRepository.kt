@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-buildscript {
-    extra.apply {
-        set("room_version", "2.6.0")
-    }
-}
+package com.example.inventory.data
 
-plugins {
-    id("com.android.application") version "8.5.2" apply false
-    id("com.android.library") version "8.5.2" apply false
-    id("org.jetbrains.kotlin.android") version "1.9.20" apply false
-}
+import kotlinx.coroutines.flow.Flow
 
-tasks.register("clean", Delete::class) {
-    delete(rootProject.buildDir)
+class OfflineItemsRepository(private val itemDao: ItemDao) : ItemsRepository {
+    override fun getAllItemsStream(): Flow<List<Item>> = itemDao.getAllItems()
+
+    override fun getItemStream(id: Int): Flow<Item?> = itemDao.getItem(id)
+
+    override suspend fun insertItem(item: Item) = itemDao.insert(item)
+
+    override suspend fun deleteItem(item: Item) = itemDao.delete(item)
+
+    override suspend fun updateItem(item: Item) = itemDao.update(item)
 }

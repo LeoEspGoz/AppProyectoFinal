@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-buildscript {
-    extra.apply {
-        set("room_version", "2.6.0")
-    }
-}
+package com.example.inventory.ui.navigation
 
-plugins {
-    id("com.android.application") version "8.5.2" apply false
-    id("com.android.library") version "8.5.2" apply false
-    id("org.jetbrains.kotlin.android") version "1.9.20" apply false
-}
+/**
+ * Interface to describe the navigation destinations for the app
+ */
+interface NavigationDestination {
+    /**
+     * Unique name to define the path for a composable
+     */
+    val route: String
 
-tasks.register("clean", Delete::class) {
-    delete(rootProject.buildDir)
+    /**
+     * String resource id to that contains title to be displayed for the screen.
+     */
+    val titleRes: Int
 }

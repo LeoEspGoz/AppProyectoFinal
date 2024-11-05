@@ -14,19 +14,21 @@
  * limitations under the License.
  */
 
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-buildscript {
-    extra.apply {
-        set("room_version", "2.6.0")
+package com.example.inventory
+
+import android.app.Application
+import com.example.inventory.data.AppContainer
+import com.example.inventory.data.AppDataContainer
+
+class InventoryApplication : Application() {
+
+    /**
+     * AppContainer instance used by the rest of classes to obtain dependencies
+     */
+    lateinit var container: AppContainer
+
+    override fun onCreate() {
+        super.onCreate()
+        container = AppDataContainer(this)
     }
-}
-
-plugins {
-    id("com.android.application") version "8.5.2" apply false
-    id("com.android.library") version "8.5.2" apply false
-    id("org.jetbrains.kotlin.android") version "1.9.20" apply false
-}
-
-tasks.register("clean", Delete::class) {
-    delete(rootProject.buildDir)
 }
