@@ -8,6 +8,6 @@ interface AppContainer {
 class AppDataContainer(private val context: Context): AppContainer{
 
     override val notasRepository : NotasRepository by lazy {
-        offlineItemsRepository(NotasDataBase.getDatabase(context).notaDao())
+        OfflineNotasRepository(NotasDataBase.getDatabase(context).notaDao())
     }
 }
