@@ -8,7 +8,9 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.inventory.R
 
 @Composable
 fun NoteEntryBody(
@@ -22,13 +24,13 @@ fun NoteEntryBody(
         OutlinedTextField(
             value = noteUiState.noteDetails?.title ?: "",
             onValueChange = onTitleChange,
-            label = { Text("Title") },
+            label = { Text(stringResource(R.string.title)) },
             modifier = Modifier.padding(bottom = 8.dp)
         )
         OutlinedTextField(
             value = noteUiState.noteDetails?.content ?: "",
             onValueChange = onContentChange,
-            label = { Text("Content") },
+            label = { Text(stringResource(R.string.content)) },
             modifier = Modifier.padding(bottom = 8.dp)
         )
         Button(
@@ -36,7 +38,7 @@ fun NoteEntryBody(
             enabled = noteUiState.noteDetails?.isEntryValid() == true, // Llamando a la función de la clase Note
             modifier = Modifier.padding(top = 8.dp)
         ) {
-            Text("Save Note")
+            Text(stringResource(R.string.save_note))
         }
     }
 }

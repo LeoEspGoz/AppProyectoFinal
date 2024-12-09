@@ -36,14 +36,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import android.provider.Settings
-/*import android.util.Log
+import android.util.Log
 import androidx.compose.runtime.Composable
 import com.example.inventory.Alarma.AlarmItem
 import com.example.inventory.Alarma.AlarmSchedulerImpl
-import com.example.inventory.ui.item.programarAlarma
+//import com.example.inventory.ui.item.programarAlarma
 import java.time.LocalDateTime
 
-*/
+
 class MainActivity : ComponentActivity() {
 
     private val requestPermissionLauncher = registerForActivityResult(

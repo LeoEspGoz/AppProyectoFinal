@@ -15,6 +15,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.ShoppingCart
 
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -27,6 +29,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import java.io.File
+import java.io.IOException
 
 @Composable
 fun AudioRecorderButton() {
@@ -45,6 +48,9 @@ fun AudioRecorderButton() {
 
     val startRecording = {
         val audioFile = getNextAudioFile()
+        if (!context.externalCacheDir?.exists()!!) {
+            context.externalCacheDir?.mkdirs()
+        }
         Log.d("AudioRecorder", "Intentando iniciar la grabación")
         try {
             mediaRecorder.apply {
@@ -76,25 +82,29 @@ fun AudioRecorderButton() {
             Log.e("AudioRecorder", "Error al detener la grabación", e)
         }
     }
+    val startPlaying: (File) -> Unit = { audioFile ->
+        if (!audioFile.exists()) {
+            Log.e("AudioPlayer", "El archivo no existe: ${audioFile.absolutePath}")
 
-    val startPlaying = { audioFile: File ->
+        }
+
+        // Asegúrate de que el MediaPlayer se reinicie antes de configurarlo nuevamente
         try {
-            mediaPlayer.apply {
-                reset()
-                setDataSource(audioFile.absolutePath)
-                prepare()
-                start()
-                isPlaying = true
-            }
+            mediaPlayer.reset()  // Reinicia el MediaPlayer
+            mediaPlayer.setDataSource(audioFile.absolutePath) // Establece la fuente de datos
+            mediaPlayer.prepare() // Prepara el MediaPlayer para la reproducción
+            mediaPlayer.start() // Inicia la reproducción
+            isPlaying = true
+
             mediaPlayer.setOnCompletionListener {
                 isPlaying = false
             }
-        } catch (e: Exception) {
-            Log.e("AudioRecorder", "Error al reproducir el audio", e)
+        } catch (e: IOException) {
+            Log.e("AudioPlayer", "Error al reproducir el audio: ${e.message}", e)
         }
     }
 
-    // Lanzador para solicitar el permiso de grabación de audio
+
     val requestPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
@@ -106,33 +116,10 @@ fun AudioRecorderButton() {
         }
     }
 
-    // Lanzador para solicitar el permiso de almacenamiento si es necesario (solo si guardas archivos fuera del caché)
-    val requestStoragePermissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        if (isGranted) {
-            // Aquí puedes agregar la lógica si es necesario para el almacenamiento
-        } else {
-            Toast.makeText(context, "Permiso de almacenamiento denegado", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    // Verificación de permisos de grabación
     LaunchedEffect(Unit) {
-        // Verificar si ya tenemos el permiso de grabación
         hasPermission = ContextCompat.checkSelfPermission(
             context, Manifest.permission.RECORD_AUDIO
         ) == PackageManager.PERMISSION_GRANTED
-
-        // Si necesitas permisos de almacenamiento
-        if (ContextCompat.checkSelfPermission(
-                context, Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            // Si tienes el permiso para escribir, puedes guardar los archivos normalmente
-        } else {
-            requestStoragePermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        }
     }
 
     Column {
@@ -144,7 +131,7 @@ fun AudioRecorderButton() {
             }
         }) {
             if (isRecording) {
-                Icon(Icons.Filled.Home, contentDescription = "Detener Grabación", tint = Color.Red)
+                Icon(Icons.Filled.PlayArrow, contentDescription = "Detener Grabación", tint = Color.Red)
             } else {
                 Icon(Icons.Filled.Done, contentDescription = "Iniciar Grabación", tint = Color.Black)
             }
@@ -171,4 +158,3 @@ fun AudioRecorderButton() {
         }
     }
 }
-

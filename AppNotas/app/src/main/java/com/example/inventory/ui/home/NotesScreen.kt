@@ -143,7 +143,7 @@ fun PlaySavedVideo(videoUri: Uri, onDismiss: () -> Unit) {
             ) {
                 Icon(
                     imageVector = Icons.Default.Close,
-                    contentDescription = "Cerrar",
+                    contentDescription = stringResource(R.string.close_message),
                     tint = Color.White
                 )
             }
@@ -206,7 +206,7 @@ private fun NoteItem(
                         mimeType?.startsWith("image/") == true -> {
                             Image(
                                 painter = rememberAsyncImagePainter(model = Uri.parse(uri)),
-                                contentDescription = "Imagen multimedia",
+                                contentDescription = stringResource(R.string.multimedia_Image),
                                 modifier = Modifier
                                     .width(100.dp)
                                     .height(150.dp)
@@ -219,7 +219,7 @@ private fun NoteItem(
                             VideoPlayer(videoUri = Uri.parse(uri), modifier = Modifier.height(200.dp))
                         }
                         else -> {
-                            Text("Formato no soportado")
+                            Text(stringResource(R.string.format_unsuport))
                         }
                     }
                 }

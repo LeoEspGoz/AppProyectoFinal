@@ -28,4 +28,20 @@
     <string name="note_not_found">Note not found</string>
     <string name="note_entry_title">Add Note</string>
     <string name="note_edit_title">Edit Note</string>
+    <string name="format_unsuport">Format Unsuported</string>
+    <string name="multimedia_Image">Multimedia Image</string>
+    <string name="close_message">Close</string>
+    <string name="content">Content</string>
+    <string name="title">Title</string>
+    <string name="program_alarm">set alarm</string>
+    <string name="select_date">Select date</string>
+    <string name="select_time">Selec time</string>
+    <string name="select_image">pick</string>
+    <string name="select_video">video</string>
+    <string name="select_camera">Camera</string>
+    <string name="take_video">Take a video</string>
+    <string name="record_audio">Record Audio</string>
+    <string name="save">Save</string>
+    <string name="save_audio">Save Audio</string>
+
 </resources>

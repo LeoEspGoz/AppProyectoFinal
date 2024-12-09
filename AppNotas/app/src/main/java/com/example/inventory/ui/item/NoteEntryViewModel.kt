@@ -46,12 +46,16 @@ class NoteEntryViewModel(
     }
 
     fun updateMultimediaUris(uris: List<String>) {
+        // Crear una nueva instancia de `NoteDetails` si no existe
         val currentNoteDetails = _noteUiState.value.noteDetails ?: NoteDetails()
+
+        // Crear una nueva instancia de `NoteUiState` con los cambios necesarios
         _noteUiState.value = _noteUiState.value.copy(
-            noteDetails = currentNoteDetails.copy(multimediaUris = uris)
+            noteDetails = currentNoteDetails.copy(
+                multimediaUris = uris
+            )
         )
     }
-
     private fun validateInput(title: String, content: String): Boolean {
         return title.isNotBlank() && content.isNotBlank()
     }

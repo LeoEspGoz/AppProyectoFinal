@@ -15,6 +15,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,31 +32,41 @@ import com.google.android.exoplayer2.ui.PlayerView
 @Composable
 fun VideoPlayer(
     videoUri: Uri?,
-    modifier: Modifier
+    modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
     val exoPlayer = remember {
-        SimpleExoPlayer.Builder(context).build().apply {
-            videoUri?.let { MediaItem.fromUri(it) }?.let { setMediaItem(it) }
-            prepare()
+        SimpleExoPlayer.Builder(context).build()
+    }
+
+    // Actualiza el media item cuando `videoUri` cambia
+    LaunchedEffect(videoUri) {
+        videoUri?.let {
+            val mediaItem = MediaItem.fromUri(it)
+            exoPlayer.setMediaItem(mediaItem)
+            exoPlayer.prepare()
         }
     }
 
-    DisposableEffect(Unit) {
+    // Libera el reproductor cuando la composición sale
+    DisposableEffect(exoPlayer) {
         onDispose {
             exoPlayer.release()
         }
     }
 
+    // Renderiza el `PlayerView`
     AndroidView(
         factory = { context ->
             PlayerView(context).apply {
                 player = exoPlayer
+                useController = true // Habilita controles del reproductor
             }
         },
         modifier = modifier
     )
 }
+
 
 
 @Composable

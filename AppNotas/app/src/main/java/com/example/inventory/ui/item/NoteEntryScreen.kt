@@ -4,9 +4,13 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.net.Uri
+import android.os.Build
+import android.os.Environment
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -20,12 +24,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.inventory.Alarma.AlarmItem
 import com.example.inventory.Alarma.AlarmSchedulerImpl
 import com.example.inventory.InventoryTopAppBar
+import com.example.inventory.R
 import com.example.inventory.ui.AppViewModelProvider
 import java.text.SimpleDateFormat
 import java.util.*
@@ -33,6 +39,7 @@ import java.io.File
 import java.time.LocalDateTime
 
 
+@RequiresApi(Build.VERSION_CODES.S)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteEntryScreen(
@@ -61,10 +68,17 @@ fun NoteEntryScreen(
     // Tomar fotos con la cámara
     val takePictureLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { success ->
         if (success && capturedMediaUri != null) {
-            multimediaUris = multimediaUris + capturedMediaUri.toString()
+            // Actualizar la lista de URIs
+            multimediaUris = multimediaUris.toMutableList().apply {
+                add(capturedMediaUri.toString())
+            }
             viewModel.updateMultimediaUris(multimediaUris)
+            Log.d("TakePictureLauncher", "Image saved at: $capturedMediaUri")
+        } else {
+            Log.e("TakePictureLauncher", "Image capture failed.")
         }
     }
+
 
     // Capturar video con la cámara
     val captureVideoLauncher = rememberLauncherForActivityResult(ActivityResultContracts.CaptureVideo()) { success ->
@@ -80,7 +94,7 @@ fun NoteEntryScreen(
     Scaffold(
         topBar = {
             InventoryTopAppBar(
-                title = if (isReminderView) "Add Reminder" else "Add Note",
+                title = if (isReminderView) "Agregar Recordatorio" else "Agregar Nota",
                 canNavigateBack = true,
                 navigateUp = navigateBack
             )
@@ -120,20 +134,21 @@ fun NoteEntryScreen(
                         val alarmItem = AlarmItem(
                             alarmTime = LocalDateTime.now().plusMinutes(1),
                             tiempoMilis = System.currentTimeMillis() + 60000,
-                            message = "Revisa tus Recordatorios: ¡Tienes algo pendiente!"
+                            message = "Revisa tus Recordatorios: ¡Tienes una tarea pendiente pendiente!"
                         )
 
                         alarmScheduler.schedule(alarmItem)
                         Toast.makeText(context, "Alarma programada", Toast.LENGTH_SHORT).show()
                     }) {
-                        Text("Programar Notificación")
+                        Text(stringResource(R.string.program_alarm))
                     }
                 }
+
                 // Título del input
                 OutlinedTextField(
                     value = noteUiState.noteDetails?.title.orEmpty(),
                     onValueChange = { viewModel.updateTitle(it) },
-                    label = { Text("Title") },
+                    label = { Text(stringResource(R.string.title)) },
                     modifier = Modifier
                         .padding(16.dp)
                         .fillMaxWidth()
@@ -143,7 +158,7 @@ fun NoteEntryScreen(
                 OutlinedTextField(
                     value = noteUiState.noteDetails?.content.orEmpty(),
                     onValueChange = { viewModel.updateContent(it) },
-                    label = { Text("Content") },
+                    label = { Text(stringResource(R.string.content)) },
                     modifier = Modifier
                         .padding(16.dp)
                         .fillMaxWidth()
@@ -155,10 +170,10 @@ fun NoteEntryScreen(
                         onClick = { showDatePicker = true },
                         modifier = Modifier.padding(16.dp)
                     ) {
-                        Text("Select Date")
+                        Text(stringResource(R.string.select_date))
                     }
                     Text(
-                        text = "Selected Date: ${
+                        text = "Seleccionar Fecha: ${
                             noteUiState.noteDetails?.fecha?.takeIf { it != 0L }?.let {
                                 SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date(it))
                             } ?: "Not selected"
@@ -170,10 +185,10 @@ fun NoteEntryScreen(
                         onClick = { showTimePicker = true },
                         modifier = Modifier.padding(16.dp)
                     ) {
-                        Text("Select Time")
+                        Text(stringResource(R.string.select_time))
                     }
                     Text(
-                        text = "Selected Time: ${
+                        text = "Seleccionar Hora: ${
                             noteUiState.noteDetails?.hora?.takeIf { it != 0L }?.let {
                                 SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date(it))
                             } ?: "Not selected"
@@ -192,7 +207,7 @@ fun NoteEntryScreen(
                             onClick = { pickImage.launch("image/*") },
                             modifier = Modifier.weight(1f)
                         ) {
-                            Text("Select Image")
+                            Text(stringResource(R.string.select_image))
                         }
 
                         Spacer(modifier = Modifier.width(16.dp))
@@ -201,7 +216,7 @@ fun NoteEntryScreen(
                             onClick = { pickImage.launch("video/*") },
                             modifier = Modifier.weight(1f)
                         ) {
-                            Text("Select Video")
+                            Text(stringResource(R.string.select_video))
                         }
                     }
 
@@ -228,7 +243,7 @@ fun NoteEntryScreen(
                             },
                             modifier = Modifier.weight(1f)
                         ) {
-                            Text("Open Camera")
+                            Text(stringResource(R.string.select_camera))
                         }
 
                         Spacer(modifier = Modifier.width(16.dp))
@@ -250,7 +265,7 @@ fun NoteEntryScreen(
                             },
                             modifier = Modifier.weight(1f)
                         ) {
-                            Text("Capture Video")
+                            Text(stringResource(R.string.take_video))
                         }
                     }
 
@@ -264,7 +279,7 @@ fun NoteEntryScreen(
                             onClick = { showAudioRecorderDialog = true },
                             modifier = Modifier.weight(1f)
                         ) {
-                            Text("Record Audio")
+                            Text(stringResource(R.string.record_audio))
                         }
                     }
 
@@ -300,7 +315,7 @@ fun NoteEntryScreen(
                         .padding(16.dp)
                         .fillMaxWidth()
                 ) {
-                    Text("Save Note")
+                    Text(stringResource(R.string.save))
                 }
             }
         }
@@ -340,28 +355,17 @@ fun NoteEntryScreen(
     if (showAudioRecorderDialog) {
         AlertDialog(
             onDismissRequest = { showAudioRecorderDialog = false },
-            title = { Text("Audio Recorder") },
+            title = { Text(stringResource(R.string.save_audio)) },
             text = { AudioRecorderButton() },
             confirmButton = {
                 Button(onClick = { showAudioRecorderDialog = false }) {
-                    Text("Close")
+                    Text(stringResource(R.string.close_message))
                 }
             }
         )
     }
 }
 
-fun programarAlarma(context: Context) {
-    val alarmScheduler = AlarmSchedulerImpl(context)
 
-    val alarmItem = AlarmItem(
-        alarmTime = LocalDateTime.now().plusMinutes(1), // Configura la hora deseada
-        tiempoMilis = System.currentTimeMillis() + 60000, // Tiempo en milisegundos
-        message = "Revisa tus tareas pendientes."
-    )
-
-    alarmScheduler.schedule(alarmItem)
-    Toast.makeText(context, "Alarma programada", Toast.LENGTH_SHORT).show()
-}
 
 

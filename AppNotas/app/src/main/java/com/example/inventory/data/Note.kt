@@ -14,10 +14,10 @@ import kotlinx.coroutines.flow.Flow
 data class Note(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val title: String,          // Título de la nota
-    val content: String,        // Contenido de la nota
-    val fecha: Long = 0L,       // Fecha en formato timestamp
-    val hora: Long = 0L,         // Hora en formato timestamp
+    val title: String,
+    val content: String,
+    val fecha: Long = 0L,
+    val hora: Long = 0L,
     val multimediaUris: List<String> // URIs de imágenes, audio, o videos
 )
 
