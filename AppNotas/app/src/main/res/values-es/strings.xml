@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Notas</string>
+    <string name="attention">Attention</string>
+    <string name="back_button">Back</string>
+    <string name="delete">Eliminar</string>
+    <string name="delete_question">Estas seguro que quieres borrar la nota?</string>
+    <string name="no_item_description">Oops!\nNo items in the inventory.\nTap + to add.</string>
+    <string name="edit_item_title">Edit Item</string>
+    <string name="item">Item</string>
+    <string name="item_detail_title">Item Details</string>
+    <string name="item_entry_title">Add Item</string>
+    <string name="item_name_req">Item Name*</string>
+    <string name="item_price_req">Item Price*</string>
+    <string name="no">No</string>
+    <string name="price">Price</string>
+    <string name="quantity_in_stock">Quantity in stock</string>
+    <string name="in_stock">%d in stock</string>
+    <string name="quantity_req">Quantity in Stock*</string>
+    <string name="save_action">Save</string>
+    <string name="sell">Sell</string>
+    <string name="yes">Yes</string>
+    <string name="required_fields">*required fields</string>
+    <string name="add_note">Añadir Nota</string>
+    <string name="note_title">Título</string>
+    <string name="note_content">Contenido</string>
+    <string name="save_note">Guardar Nota</string>
+    <string name="note_detail_title">Detalles</string>
+    <string name="note_not_found">Note not found</string>
+    <string name="note_entry_title">Agregar Nota</string>
+    <string name="note_edit_title">Editar Nota</string>
+</resources>
